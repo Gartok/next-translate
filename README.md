@@ -11,10 +11,10 @@
 [![npm version](https://badge.fury.io/js/next-translate.svg)](https://badge.fury.io/js/next-translate)
 [![PRs Welcome][badge-prwelcome]][prwelcome]
 [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)][spectrum]
-      <a href="https://github.com/vinissimus/next-translate/actions?query=workflow%3ACI" alt="Tests status">
-        <img src="https://github.com/vinissimus/next-translate/workflows/CI/badge.svg" /></a>
-   <a href="https://twitter.com/intent/follow?screen_name=shields_io">
-        <img src="https://img.shields.io/twitter/follow/aralroca?style=social&logo=twitter"
+<a href="https://github.com/vinissimus/next-translate/actions?query=workflow%3ACI" alt="Tests status">
+<img src="https://github.com/vinissimus/next-translate/workflows/CI/badge.svg" /></a>
+<a href="https://twitter.com/intent/follow?screen_name=shields_io">
+<img src="https://img.shields.io/twitter/follow/aralroca?style=social&logo=twitter"
             alt="follow on Twitter"></a>
 
 </div>
@@ -160,6 +160,13 @@ Add a configuration file `i18n.json` in the root of the project. Each page shoul
     "*": ["common"],
     "/": ["home", "example"],
     "/about": ["about"]
+  },
+  "pageTranslations": {
+    "[home]": {
+      "en": "home",
+      "ca": "accueil",
+      "es": "bienvenida"
+    }
   }
 }
 ```
@@ -225,6 +232,8 @@ In order to use each translation in the project, use the _translation id_ compos
 | `loadLocaleFrom`      | As an alternative to `localesPath`, if `i18nMiddleware` is used instead of the "build step". It's an async function that returns the dynamic import of each locale. [See an example](/docs/USING_CUSTOM_SERVER.md#3-add-the-i18n-middleware)                                                                                                                                                                                                                                                                                                                                                           | `Function`                      | `null`                                                                     |
 | `pages`               | An object that defines the namespaces used in each page. Example of object: `{"/": ["home", "example"]}`. To add namespaces to all pages you should use the key `"*"`, ex: `{"*": ["common"]}`. It's also possible to use regex using `rgx:` on front: `{"rgx:/form$": ["form"]}`. In case of using a custom server as an [alternative](#using-an-alternative-of-the-build-step-custom-server) of the "build step", you can also use a function instead of an array, to provide some namespaces depending on some rules, ex: `{ "/": ({ req, query }) => query.type === 'example' ? ['example'] : []}` | `Object<Array<string>/Function` | `{}`                                                                       |
 | `logBuild`            | Configure if the build result should be logged to the console                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `Boolean`                       | `true`                                                                     |
+| `pageTranslations`    | Convert page [slug] to different url name it usefull to make link for each language                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `Object<Object<key: string>`    | `{}`                                                                       |
+| `defaultLanguage`     | ISO of the default locale ("en" as default).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## 5. API
 
@@ -865,6 +874,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

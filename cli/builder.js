@@ -13,6 +13,7 @@ let {
   pages = {},
   redirectToDefaultLang: _deprecated_redirectToDefaultLang,
   logBuild = true,
+  pageTranslations = {},
 } = require(process.cwd() + '/i18n.json') || {}
 
 const indexFolderRgx = /\/index\/index\....?$/
@@ -160,10 +161,6 @@ function specialMethod(name, lang) {
   return `export const ${name} = ctx => _rest.${name}({ ...ctx, lang: '${lang}' })`
 }
 
-function pageConfig(data) {
-  return data.match(/export\s(const|var|let)\sconfig(.|\n)*?}\n{0,1}/m)[0]
-}
-
 function exportAllFromPage(prefix, page, lang) {
   const clearCommentsRgx = /\/\*[\s\S]*?\*\/|\/\/.*/g
   const pageData = fs
@@ -184,7 +181,7 @@ ${isGetStaticProps ? specialMethod('getStaticProps', lang) : ''}
 ${isGetStaticPaths ? specialMethod('getStaticPaths', lang) : ''}
 ${isGetServerSideProps ? specialMethod('getServerSideProps', lang) : ''}
 ${isHead ? `export { Head } from '${prefix}/${clearPageExt(page)}'` : ''}
-${isConfig ? pageConfig(pageData) : ''}
+${isConfig ? `export { config } from '${prefix}/${clearPageExt(page)}'` : ''}
 `
 
   return { hasSomeSpecialMethod, exports }
@@ -243,10 +240,25 @@ function buildPageLocale({ prefix, pagePath, namespaces, lang, path }) {
   const finalPath = pagePath.replace(currentPagesDir, path)
   const template = getPageTemplate(prefix, pagePath, lang, namespaces)
   const [filename] = finalPath.split('/').reverse()
-  const dirs = finalPath.replace(`/${filename}`, '')
+  let dirs = finalPath.replace(`/${filename}`, '')
+
+  Object.keys(pageTranslations).forEach((pageTranslation) => {
+    dirs = dirs.replace(
+      pageTranslation,
+      pageTranslations[pageTranslation][lang]
+    )
+  })
+
   let finalFile = finalPath
     .replace(/(\.tsx|\.ts|\.mdx)$/, '.js')
     .replace(indexFolderRgx, '/index.js')
+
+  Object.keys(pageTranslations).forEach((pageTranslation) => {
+    finalFile = finalFile.replace(
+      pageTranslation,
+      pageTranslations[pageTranslation][lang]
+    )
+  })
 
   fs.mkdirSync(dirs, { recursive: true })
   fs.writeFileSync(finalFile, template)
@@ -292,6 +304,8 @@ function buildPageInAllLocales(pagePath, namespaces) {
     fs.copyFileSync(pagePath, pagePath.replace(currentPagesDir, finalPagesDir))
     return
   }
+
+  console.log()
 
   // For each lang
   getLangs().forEach((lang) => {
