@@ -80,5 +80,8 @@
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
     }
+  },
+  "dependencies": {
+    "next-translate": "https://github.com/Gartok/next-translate.git"
   }
 }

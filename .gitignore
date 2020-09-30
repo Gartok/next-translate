@@ -35,7 +35,6 @@ yarn-error.log*
 /examples/static-site/pages
 
 # lib build
-*.js
 !src/**/*.js
 !__tests__/*.js
 !examples/**/*.js

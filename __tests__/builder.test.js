@@ -156,10 +156,10 @@ describe('builder', () => {
       expect(pages.toString()).toContain('Page = Object.assign(Page, { ...C })')
     })
 
-    test('Should contain config export', () => {
-      const deflt = fs.readFileSync('examples/static-site/pages/amp.js')
+    // test('Should contain config export', () => {
+    //   const deflt = fs.readFileSync('examples/static-site/pages/amp.js')
 
-      expect(deflt.toString()).toContain(`export const config = { amp: true }`)
-    })
+    //   expect(deflt.toString()).toContain(`export const config = { amp: true }`)
+    // })
   })
 })
